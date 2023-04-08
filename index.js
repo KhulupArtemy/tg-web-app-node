@@ -52,14 +52,15 @@ bot.on('message', async (msg) => {
 });
 
 app.post('/web-data', async (req, res) => {
-    const {queryId, totalPrice} = req.body;
+    const {queryId, products = [], totalPrice} = req.body;
     try {
         await bot.answerWebAppQuery(queryId, {
             type: 'article',
             id: queryId,
             title: 'Успешная покупка',
             input_message_content: {
-                message_text: `Сумма вашей покупки составляет ${totalPrice}`
+                message_text: `Сумма вашей покупки составляет ${totalPrice},
+                ${products.map(item => item.title).join(', ')}`
             }
         })
         return res.status(200).json({});
@@ -67,6 +68,5 @@ app.post('/web-data', async (req, res) => {
         return res.status(500).json({});
     }
 })
-//${products.map(item => item.title).join(', ')}
 const PORT = 8000;
 app.listen(PORT, () => console.log('Server started on PORT ' + PORT))
